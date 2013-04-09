@@ -1,0 +1,3 @@
+# Specify below the worlds that only Spoutcraft clients should be allowed to connect to.
+worlds:
+  - example_world
