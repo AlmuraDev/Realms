@@ -29,6 +29,7 @@ public class RealmsPlugin extends JavaPlugin {
     public void onEnable() {
         // Handle configuration
         config = new RealmsConfiguration(this);
+        config.onEnable();
 
         // Register events
         Bukkit.getServer().getPluginManager().registerEvents(new RealmsListener(this), this);

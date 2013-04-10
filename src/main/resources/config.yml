@@ -1,3 +1,10 @@
+# Specify fallback world to use when a player logs in without Spoutcraft to a world that requires Spoutcraft. If empty,
+# player will be kicked with deny message as the kick message.
+fallback-world:
+
+# Message used when a player is denied access to a world when not using Spoutcraft.
+deny-message: This server requires Spoutcraft for that world.
+
 # Specify below the worlds that only Spoutcraft clients should be allowed to connect to.
 worlds:
   - example_world

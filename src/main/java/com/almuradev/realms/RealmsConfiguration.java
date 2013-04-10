@@ -28,6 +28,8 @@ import java.util.List;
 public class RealmsConfiguration {
     private final RealmsPlugin plugin;
     private FileConfiguration config;
+    private String fallbackWorld;
+    private String denyMessage;
     private List<String> worldNames;
 
     public RealmsConfiguration(RealmsPlugin plugin) {
@@ -40,7 +42,17 @@ public class RealmsConfiguration {
             plugin.saveDefaultConfig();
         }
         config = plugin.getConfig();
+        fallbackWorld = config.getString("fallback-world");
+        denyMessage = config.getString("deny-message");
         worldNames = config.getStringList("worlds");
+    }
+
+    public String getFallbackWorld() {
+        return fallbackWorld;
+    }
+
+    public String getDenyMessage() {
+        return denyMessage;
     }
 
     public List<String> getWorldNames() {

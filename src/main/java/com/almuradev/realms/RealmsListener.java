@@ -19,6 +19,8 @@
  */
 package com.almuradev.realms;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -37,6 +39,7 @@ public class RealmsListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerPortal(PlayerPortalEvent event) {
         Player player = event.getPlayer();
+        String denyMessage = plugin.getConfiguration().getDenyMessage();
 
         // If the player is entering a portal to a world that isn't the one they were already in, run these checks.
         if (!player.getWorld().getName().equalsIgnoreCase(event.getTo().getWorld().getName())) {
@@ -44,9 +47,9 @@ public class RealmsListener implements Listener {
             for (String worldName : plugin.getConfiguration().getWorldNames()) {
                 if (worldName.equalsIgnoreCase(event.getTo().getWorld().getName())) {
                     // Check for permission or if they have Spoutcraft
-                    if (!VaultUtil.hasPermission(player.getName(), event.getTo().getWorld().getName(), "realms.bypass") && !SpoutManager.getPlayer(player).isSpoutCraftEnabled()) { // Check for permission
+                    if (!VaultUtil.hasPermission(player.getName(), event.getTo().getWorld().getName(), "realms.bypass") && !SpoutManager.getPlayer(player).isSpoutCraftEnabled()) {
                         event.setCancelled(true);
-                        player.sendMessage("This server requires Spoutcraft for \"" + event.getTo().getWorld().getName() + "\".");
+                        player.sendMessage(denyMessage);
                     }
                 }
             }
@@ -56,13 +59,27 @@ public class RealmsListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSpoutcraftFailed(SpoutcraftFailedEvent event) {
         Player player = event.getPlayer();
+        String fallbackWorld = plugin.getConfiguration().getFallbackWorld();
+        String denyMessage = plugin.getConfiguration().getDenyMessage();
 
         // Compare the worlds in config.yml against the world the player is in
         for (String worldName : plugin.getConfiguration().getWorldNames()) {
             if (worldName.equalsIgnoreCase(player.getWorld().getName())) {
                 // Check for permission or if they have Spoutcraft
                 if (!VaultUtil.hasPermission(player.getName(), player.getWorld().getName(), "realms.bypass") && !SpoutManager.getPlayer(player).isSpoutCraftEnabled()) {
-                    player.kickPlayer("This server requires Spoutcraft for \"" + player.getWorld().getName() + "\".");
+                    if (fallbackWorld != null && !fallbackWorld.isEmpty()) {
+                        final World world = Bukkit.getWorld(fallbackWorld);
+
+                        if (world != null) {
+                            player.teleport(world.getSpawnLocation());
+                            player.sendMessage(denyMessage);
+                        } else {
+                            player.kickPlayer(denyMessage);
+                        }
+                    } else {
+                        // Kick the player if the fallback world is null or is not loaded in the current session
+                        player.kickPlayer(denyMessage);
+                    }
                 }
             }
         }
