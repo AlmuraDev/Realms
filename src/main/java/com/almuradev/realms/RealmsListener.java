@@ -22,20 +22,41 @@ package com.almuradev.realms;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.event.spout.SpoutcraftFailedEvent;
 
 public class RealmsListener implements Listener {
 
     @EventHandler
-    public void onPlayerTeleport(PlayerTeleportEvent event) {
+    public void onPlayerPortal(PlayerPortalEvent event) {
         Player player = event.getPlayer();
-        for (String world : RealmsConfiguration.worlds) {
-            if (world.equalsIgnoreCase(player.getWorld().getName())) {
-                if (!VaultUtil.hasPermission(player.getName(), player.getWorld().getName(), "realms.bypass")) { // Check for permission
-                    event.setCancelled(true); // Causes timeout if the teleport cause is from logging in
-                } else if (!SpoutManager.getPlayer(player).isSpoutCraftEnabled()) { // Check if they have Spoutcraft
-                    event.setCancelled(true); // Causes timeout if the teleport cause is from logging in
+
+        // If the player is entering a portal to a world that isn't the one they were already in, run these checks.
+        if (!player.getWorld().getName().equalsIgnoreCase(event.getTo().getWorld().getName())) {
+            // Compare the worlds in config.yml against the world the player is in
+            for (String worldName : RealmsConfiguration.getWorldNames()) {
+                if (worldName.equalsIgnoreCase(event.getTo().getWorld().getName())) {
+                    // Check for permission or if they have Spoutcraft
+                    if (!VaultUtil.hasPermission(player.getName(), event.getTo().getWorld().getName(), "realms.bypass") && !SpoutManager.getPlayer(player).isSpoutCraftEnabled()) { // Check for permission
+                        event.setCancelled(true);
+                        player.sendMessage("This server requires Spoutcraft for \"" + event.getTo().getWorld().getName() + "\".");
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onSpoutcraftFail(SpoutcraftFailedEvent event) {
+        Player player = event.getPlayer();
+
+        // Compare the worlds in config.yml against the world the player is in
+        for (String worldName : RealmsConfiguration.getWorldNames()) {
+            if (worldName.equalsIgnoreCase(player.getWorld().getName())) {
+                // Check for permission or if they have Spoutcraft
+                if (!VaultUtil.hasPermission(player.getName(), player.getWorld().getName(), "realms.bypass") && !SpoutManager.getPlayer(player).isSpoutCraftEnabled()) {
+                    player.kickPlayer("This server requires Spoutcraft for \"" + player.getWorld().getName() + "\".");
                 }
             }
         }

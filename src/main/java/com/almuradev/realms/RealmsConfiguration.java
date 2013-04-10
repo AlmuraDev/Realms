@@ -22,13 +22,17 @@ package com.almuradev.realms;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RealmsConfiguration {
     private final RealmsPlugin plugin;
     private FileConfiguration config;
-    public static List<String> worlds;
+    private static List<String> worldNames;
+
+    public static List<String> getWorldNames() {
+        return Collections.unmodifiableList(worldNames);
+    }
 
     public RealmsConfiguration(RealmsPlugin plugin) {
         this.plugin = plugin;
@@ -40,14 +44,6 @@ public class RealmsConfiguration {
             plugin.saveDefaultConfig();
         }
         config = plugin.getConfig();
-        worlds = config.getStringList("worlds");
+        worldNames = config.getStringList("worlds");
     }
-
-//    public void save() {
-//        try {
-//            config.save(new File(plugin.getDataFolder(), "config.yml"));
-//        } catch (Exception e) {
-//            throw new IllegalStateException("Could not save configuration changes to file!");
-//        }
-//    }
 }
