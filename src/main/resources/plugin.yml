@@ -7,3 +7,12 @@ website: ${project.organization.url}
 main: ${mainClass}
 depend: [Spout]
 load: POSTWORLD
+
+permissions:
+  forcebuild.*:
+    description: Combines all permissions under one wildcard
+    children:
+      realms.bypass: true
+  realms.bypass:
+    description: Allows the user to bypass the Spoutcraft only restriction on worlds
+    default: false
