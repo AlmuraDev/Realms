@@ -23,20 +23,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class RealmsPlugin extends JavaPlugin {
-    private static RealmsConfiguration config;
+    private RealmsConfiguration config;
 
     @Override
     public void onEnable() {
-        // Register events
-        Bukkit.getServer().getPluginManager().registerEvents(new RealmsListener(), this);
-
         // Handle configuration
         config = new RealmsConfiguration(this);
-        config.onEnable();
+
+        // Register events
+        Bukkit.getServer().getPluginManager().registerEvents(new RealmsListener(this), this);
     }
 
-    @Override
-    public void onDisable() {
-
+    public RealmsConfiguration getConfiguration() {
+        return config;
     }
 }

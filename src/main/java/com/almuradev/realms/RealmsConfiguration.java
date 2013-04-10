@@ -28,11 +28,7 @@ import java.util.List;
 public class RealmsConfiguration {
     private final RealmsPlugin plugin;
     private FileConfiguration config;
-    private static List<String> worldNames;
-
-    public static List<String> getWorldNames() {
-        return Collections.unmodifiableList(worldNames);
-    }
+    private List<String> worldNames;
 
     public RealmsConfiguration(RealmsPlugin plugin) {
         this.plugin = plugin;
@@ -45,5 +41,9 @@ public class RealmsConfiguration {
         }
         config = plugin.getConfig();
         worldNames = config.getStringList("worlds");
+    }
+
+    public List<String> getWorldNames() {
+        return Collections.unmodifiableList(worldNames);
     }
 }

@@ -21,21 +21,27 @@ package com.almuradev.realms;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.spout.SpoutcraftFailedEvent;
 
 public class RealmsListener implements Listener {
+    private final RealmsPlugin plugin;
 
-    @EventHandler
+    public RealmsListener(RealmsPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerPortal(PlayerPortalEvent event) {
         Player player = event.getPlayer();
 
         // If the player is entering a portal to a world that isn't the one they were already in, run these checks.
         if (!player.getWorld().getName().equalsIgnoreCase(event.getTo().getWorld().getName())) {
             // Compare the worlds in config.yml against the world the player is in
-            for (String worldName : RealmsConfiguration.getWorldNames()) {
+            for (String worldName : plugin.getConfiguration().getWorldNames()) {
                 if (worldName.equalsIgnoreCase(event.getTo().getWorld().getName())) {
                     // Check for permission or if they have Spoutcraft
                     if (!VaultUtil.hasPermission(player.getName(), event.getTo().getWorld().getName(), "realms.bypass") && !SpoutManager.getPlayer(player).isSpoutCraftEnabled()) { // Check for permission
@@ -47,12 +53,12 @@ public class RealmsListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onSpoutcraftFail(SpoutcraftFailedEvent event) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onSpoutcraftFailed(SpoutcraftFailedEvent event) {
         Player player = event.getPlayer();
 
         // Compare the worlds in config.yml against the world the player is in
-        for (String worldName : RealmsConfiguration.getWorldNames()) {
+        for (String worldName : plugin.getConfiguration().getWorldNames()) {
             if (worldName.equalsIgnoreCase(player.getWorld().getName())) {
                 // Check for permission or if they have Spoutcraft
                 if (!VaultUtil.hasPermission(player.getName(), player.getWorld().getName(), "realms.bypass") && !SpoutManager.getPlayer(player).isSpoutCraftEnabled()) {
