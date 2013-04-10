@@ -5,7 +5,7 @@ author: ${project.organization.name}
 website: ${project.organization.url}
 
 main: ${mainClass}
-depend: [Spout]
+depend: [Spout, Vault]
 load: POSTWORLD
 
 permissions:
