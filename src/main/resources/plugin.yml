@@ -9,7 +9,7 @@ depend: [Spout, Vault]
 load: POSTWORLD
 
 permissions:
-  forcebuild.*:
+  realms.*:
     description: Combines all permissions under one wildcard
     children:
       realms.bypass: true
