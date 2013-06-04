@@ -21,6 +21,9 @@ package com.almuradev.realms;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
+
+import java.io.IOException;
 
 public class RealmsPlugin extends JavaPlugin {
     private RealmsConfiguration config;
@@ -33,6 +36,13 @@ public class RealmsPlugin extends JavaPlugin {
 
         // Register events
         Bukkit.getServer().getPluginManager().registerEvents(new RealmsListener(this), this);
+
+        // Start metrics
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException e) {
+        }
     }
 
     public RealmsConfiguration getConfiguration() {
