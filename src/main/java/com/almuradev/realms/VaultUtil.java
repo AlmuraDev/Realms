@@ -1,8 +1,8 @@
 /*
  * This file is part of Realms.
  *
- * © 2013 AlmuraDev <http://www.almuradev.com/>
- * Realms is licensed under the GNU General Public License.
+ * Copyright (c) 2012, AlmuraDev <http://www.almuradev.com/>
+ * Realms is licensed under the Almura Development License.
  *
  * Realms is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
